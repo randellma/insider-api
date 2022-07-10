@@ -213,10 +213,6 @@ class GameService(private val gameRepository: GameRepository) {
     if (ACTION_LOOKUP[game.status]?.contains(GameAction.VOTE_PLAYER) != true) {
       throw IllegalArgumentException("Voting cannot be completed in current status.")
     }
-    val nonVotingPlayerCount = game.players.values.filter { it.isActive && it.accusedPlayer == null }.size
-    if (nonVotingPlayerCount > 0) {
-      throw IllegalArgumentException("All active players have not yet cast a vote.")
-    }
     game.status = GameStatus.SUMMARY
     game.lastActivity = LocalDateTime.now()
     return mapGameStateDto(game, player)

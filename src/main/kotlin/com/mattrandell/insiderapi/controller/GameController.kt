@@ -79,7 +79,7 @@ class GameController(private val gameService: GameService) {
 
     @PostMapping("/votePlayer")
     fun votePlayer(playerId: String, accusedPlayerId: String): ResponseEntity<GameStateDto> {
-        logger.info("Vote player - playerId: {}", playerId)
+        logger.info("Vote player - playerId: {} accusedPlayerId: {}", playerId, accusedPlayerId)
         return ResponseEntity(gameService.votePlayer(playerId, accusedPlayerId), HttpStatus.OK)
     }
 

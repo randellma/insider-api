@@ -1184,22 +1184,6 @@ class GameServiceTest {
   }
 
   @Test
-  fun `completeVoting when pending votes, throws exception`() {
-    val game = getTestGame()
-    game.status = GameStatus.FIND_INSIDER
-    game.players["p1"]?.role = PlayerRole.LEADER
-    game.players["p1"]?.isActive = true
-    game.players["p2"]?.role = PlayerRole.INSIDER
-    game.players["p2"]?.isActive = true
-    every { gameRepository.playerGameMap } returns mutableMapOf("p1" to game)
-    every { gameRepository.gameMap } returns mutableMapOf()
-
-    val thrown = assertThrows<IllegalArgumentException> { gameService.completeVoting("p1") }
-
-    assertEquals("All active players have not yet cast a vote.", thrown.message)
-  }
-
-  @Test
   fun `completeVoting when valid, sets status to summary and updates last active`() {
     val game = getTestGame()
     game.status = GameStatus.FIND_INSIDER
