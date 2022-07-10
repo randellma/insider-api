@@ -12,5 +12,6 @@ val ACTION_LOOKUP = mapOf(
         PRE_GAME to listOf(START, EXCHANGE_WORD, RESET),
         PLAYING to listOf(GUESSED, TIME_UP, RESET),
         FIND_INSIDER to listOf(VOTE_PLAYER, COMPLETE_VOTING, RESET),
-        SUMMARY to listOf(RESET, END)
+        SUMMARY to listOf(RESET, END),
+        LOST to listOf(RESET, END)
 )

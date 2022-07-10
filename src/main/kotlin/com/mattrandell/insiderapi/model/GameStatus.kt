@@ -6,5 +6,6 @@ enum class GameStatus {
     PRE_GAME,
     PLAYING,
     FIND_INSIDER,
-    SUMMARY
+    SUMMARY,
+    LOST
 }

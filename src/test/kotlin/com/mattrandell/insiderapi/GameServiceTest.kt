@@ -35,6 +35,7 @@ class GameServiceTest {
 
     assertEquals(GameStatus.NO_GAME, gameState.status)
     assertEquals("", gameState.code)
+    assertEquals("p1", gameState.playerId)
     assertNull(gameState.yourRole)
     assertNull(gameState.secretWord)
     assertTrue(gameState.players.isEmpty())
@@ -51,6 +52,7 @@ class GameServiceTest {
     verify(exactly = 1) { gameRepository.playerGameMap }
     assertEquals(GameStatus.WAITING, gameState.status)
     assertEquals("1234", gameState.code)
+    assertEquals("p1", gameState.playerId)
     assertNull(gameState.yourRole)
     assertNull(gameState.secretWord)
     assertEquals(game.lastActivity, gameState.lastActivity)
@@ -1065,12 +1067,20 @@ class GameServiceTest {
     val game = getTestGame()
     game.status = GameStatus.PLAYING
     game.players["p1"]?.role = PlayerRole.LEADER
+    game.players["p1"]?.isActive = true
+    game.players["p2"]?.role = PlayerRole.INSIDER
+    game.players["p2"]?.isActive = true
     every { gameRepository.playerGameMap } returns mutableMapOf("p1" to game)
     every { gameRepository.gameMap } returns mutableMapOf()
 
-    gameService.timeUp("p1")
+    val dto = gameService.timeUp("p1")
 
-    assertEquals(GameStatus.SUMMARY, game.status)
+    assertEquals(GameStatus.LOST, game.status)
+    assertNotNull(dto.gameSummary)
+    assertNotNull(dto.gameSummary!!.secretWord)
+    assertEquals("bob", dto.gameSummary!!.insider)
+    assertEquals(1, dto.gameSummary!!.votes.keys.size)
+    assertEquals(2, dto.gameSummary!!.votes.get("no vote"))
     assertTrue(game.lastActivity.truncatedTo(ChronoUnit.SECONDS).isEqual(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)))
   }
 

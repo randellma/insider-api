@@ -18,7 +18,7 @@ class GameService(private val gameRepository: GameRepository) {
 
   fun getGameState(playerId: String): GameStateDto {
     val game = gameRepository.playerGameMap[playerId] ?: Game("").apply { status = GameStatus.NO_GAME }
-    val player = game.players[playerId] ?: Player("", "")
+    val player = game.players[playerId] ?: Player(playerId, "")
     return mapGameStateDto(game, player)
   }
 
@@ -191,7 +191,7 @@ class GameService(private val gameRepository: GameRepository) {
     if (ACTION_LOOKUP[game.status]?.contains(GameAction.TIME_UP) != true) {
       throw IllegalArgumentException("Time cannot be up in current status.")
     }
-    game.status = GameStatus.SUMMARY
+    game.status = GameStatus.LOST
     game.lastActivity = LocalDateTime.now()
     return mapGameStateDto(game, player)
   }
@@ -251,7 +251,7 @@ class GameService(private val gameRepository: GameRepository) {
   }
 
   private fun mapGameStateDto(game: Game, player: Player): GameStateDto {
-    return GameStateDto(game.code, game.players.values.stream().map { p -> mapPlayerDto(p) }.toList(), game.status, game.gameSettings, game.lastActivity).apply {
+    return GameStateDto(player.id, game.code, game.players.values.stream().map { p -> mapPlayerDto(p) }.toList(), game.status, game.gameSettings, game.lastActivity).apply {
       yourRole = player.role
       secretWord = if (player.role == PlayerRole.INSIDER || player.role == PlayerRole.LEADER) game.secretWord else null
       gameSummary = mapGameSummary(game)
@@ -263,7 +263,7 @@ class GameService(private val gameRepository: GameRepository) {
   }
 
   private fun mapGameSummary(game: Game): GameSummary? {
-    if (game.status != GameStatus.SUMMARY) {
+    if (game.status != GameStatus.SUMMARY && game.status != GameStatus.LOST) {
       return null
     }
     val insiderName = game.players.values.firstOrNull() { it.role == PlayerRole.INSIDER }?.name;
