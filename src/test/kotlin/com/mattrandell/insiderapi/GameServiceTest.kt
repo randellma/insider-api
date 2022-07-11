@@ -931,7 +931,7 @@ class GameServiceTest {
   }
 
   @Test
-  fun `startGame when valid, the word changes and updates lastUpdated`() {
+  fun `startGame when valid, the word changes and updates playStartTime`() {
     val game = getTestGame()
     game.status = GameStatus.PRE_GAME
     game.players["p1"]?.role = PlayerRole.LEADER
@@ -943,7 +943,7 @@ class GameServiceTest {
 
     assertEquals(GameStatus.PLAYING, game.status)
     assertEquals("My secret word", game.secretWord)
-    assertTrue(game.lastActivity.truncatedTo(ChronoUnit.SECONDS).isEqual(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)))
+    assertTrue(game.playStartTime.truncatedTo(ChronoUnit.SECONDS).isEqual(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)))
   }
 
 

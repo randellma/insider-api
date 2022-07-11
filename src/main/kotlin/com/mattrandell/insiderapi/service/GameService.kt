@@ -167,6 +167,7 @@ class GameService(private val gameRepository: GameRepository) {
     }
     game.status = GameStatus.PLAYING
     game.lastActivity = LocalDateTime.now()
+    game.playStartTime = LocalDateTime.now()
     return mapGameStateDto(game, player)
   }
 
@@ -248,6 +249,7 @@ class GameService(private val gameRepository: GameRepository) {
 
   private fun mapGameStateDto(game: Game, player: Player): GameStateDto {
     return GameStateDto(player.id, game.code, game.players.values.stream().map { p -> mapPlayerDto(p) }.toList(), game.status, game.gameSettings, game.lastActivity).apply {
+      playStartTime = game.playStartTime
       yourRole = player.role
       secretWord = if (player.role == PlayerRole.INSIDER || player.role == PlayerRole.LEADER) game.secretWord else null
       gameSummary = mapGameSummary(game)
