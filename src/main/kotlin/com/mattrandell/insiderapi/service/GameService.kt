@@ -10,7 +10,6 @@ import com.mattrandell.insiderapi.dto.PlayerDto
 import com.mattrandell.insiderapi.model.*
 import com.mattrandell.insiderapi.repository.GameRepository
 import org.springframework.stereotype.Service
-import java.lang.IllegalArgumentException
 import java.time.LocalDateTime
 
 @Service
@@ -265,9 +264,11 @@ class GameService(private val gameRepository: GameRepository) {
       return null
     }
     val insiderName = game.players.values.firstOrNull() { it.role == PlayerRole.INSIDER }?.name;
-    val votes = game.players.values.filter { it.isActive }.map { it.accusedPlayer?.name ?: "no vote" }.groupingBy { it }.eachCount()
+    val votes = game.players.values.filter { it.isActive }.map {
+      it.accusedPlayer?.name ?: "no vote"
+    }.groupingBy { it }.eachCount()
     return GameSummary(
-        game.secretWord?:"NO WORD",
+        game.secretWord ?: "NO WORD",
         insiderName,
         votes
     )
