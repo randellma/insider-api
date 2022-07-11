@@ -1,5 +1,6 @@
 # TODO
 - Disallow duplicate names
-- gamestate uuid check to avoid unnecessary lookup/mapping
+- stomp/websocket
 - only allow active players to vote
-- End game
+- End game implementation
+- publish somewhere
